@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "nft-staking-rentspace-backend": {
+      "main": "src/nft-staking-rentspace-backend/main.mo",
+      "type": "motoko"
+    },
+    "nft-staking-rentspace-frontend": {
+      "dependencies": [
+        "nft-staking-rentspace-backend"
+      ],
+      "source": [
+        "src/nft-staking-rentspace-frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "nft-staking-rentspace-frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
