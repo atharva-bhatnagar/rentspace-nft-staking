@@ -8,8 +8,8 @@ module{
         id:Principal;
         name:Text;
         email:Text;
-        importedNFTs:List.List<Text>;
-        stakedNFTs:List.List<Text>;
+        importedNFTs:[Text];
+        stakedNFTs:[Text];
         rewardPoints:Nat;
     };
     public type UserInputData={
