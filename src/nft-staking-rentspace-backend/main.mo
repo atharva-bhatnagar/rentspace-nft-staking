@@ -9,27 +9,51 @@ import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Nat "mo:base/Nat";
-import Option "mo:base/Option";
+import Debug "mo:base/Debug";
 import Functions "utils/functions";
 import NftModel "models/nftModel";
 actor {
   var userRecords=TrieMap.TrieMap<Principal,UserModel.User>(Principal.equal,Principal.hash);
+  stable var stableUserRecords:[(Principal,UserModel.User)]=[];
+
   var importedNftRecords=TrieMap.TrieMap<Text,NftModel.ImportedNFT>(Text.equal,Text.hash);
+  stable var stableImportedNFTRecords:[(Text,NftModel.ImportedNFT)]=[];
+
   var stakedNftRecords=TrieMap.TrieMap<Text,NftModel.StakedNFT>(Text.equal,Text.hash);
-  // var stakedNftRecords=Trie.empty<Text,NftModel.StakedNFT>();
+  stable var stableStakedNFTRecords:[(Text,NftModel.StakedNFT)]=[];
+
+  system func preupgrade() {
+    stableUserRecords := Iter.toArray(userRecords.entries());
+    stableImportedNFTRecords:= Iter.toArray(importedNftRecords.entries());
+    stableStakedNFTRecords:= Iter.toArray(stakedNftRecords.entries());
+  };
+
+  system func postupgrade() {
+    let userRecordVals = stableUserRecords.vals();
+    let importedNFTRecordVals = stableImportedNFTRecords.vals();
+    let stakedNFTRecordVals = stableStakedNFTRecords.vals();
+
+    userRecords := TrieMap.fromEntries<Principal,UserModel.User>(userRecordVals,Principal.equal,Principal.hash);
+    importedNftRecords := TrieMap.fromEntries<Text,NftModel.ImportedNFT>(importedNFTRecordVals,Text.equal,Text.hash);
+    stakedNftRecords := TrieMap.fromEntries<Text,NftModel.StakedNFT>(stakedNFTRecordVals,Text.equal,Text.hash);
+
+    stableUserRecords := [];
+    stableImportedNFTRecords := [];
+    stableStakedNFTRecords := [];
+  };
 
   // to do -->
 
-  // 1. user creation Function d
-  // 2. user details get Functions d
-  // 3. import nft function d
-  // 4. stake imported nfts d
-  // 5. list all the staked nfts with pagination d
-  // 6. list nft imported by a user d
-  // 7. list nft staked by user d
-  // 8. Get NFT details for imported NFTs d
-  // 9. Get NFT details for staked NFTs d
-  // 10. unstake a specific NFT
+  // 1. user creation Function d t
+  // 2. user details get Functions d t
+  // 3. import nft function d t
+  // 4. stake imported nfts d t
+  // 5. list all the staked nfts with pagination d t
+  // 6. list nft imported by a user d t
+  // 7. list nft staked by user d t
+  // 8. Get NFT details for imported NFTs d t
+  // 9. Get NFT details for staked NFTs d t
+  // 10. unstake a specific NFT d t
   // 11. calculate result
   // 12. Add DIP721 in staking and unstaking
 
@@ -135,6 +159,13 @@ actor {
                   canisterID=value.canisterID;
                   stakedAt=Time.now();
                 };
+                let newImportedNFT:NftModel.ImportedNFT={
+                  id=_nftID;
+                  metadata=value.metadata;
+                  owner=caller;
+                  canisterID=value.canisterID;
+                  isStaked=true;
+                };
                 var newStakedNFTList:Buffer.Buffer<Text> = Buffer.fromArray(owner.stakedNFTs);
                 newStakedNFTList.add(_nftID);
                 let newUserData:UserModel.User={
@@ -147,6 +178,7 @@ actor {
                 };
                 userRecords.put(caller,newUserData);
                 stakedNftRecords.put(_nftID,newStakedNFT);
+                ignore importedNftRecords.replace(_nftID,newImportedNFT);
                 return #ok("Your NFT is staked now!")
               }
             }
@@ -210,17 +242,22 @@ actor {
     try{
       let nftIter=stakedNftRecords.entries();
       let nftArr=Iter.toArray(nftIter);
+      Debug.print(debug_show (nftArr));
       if(_pageNo < 1){
         return #err("Page number starts from 1");
       };
       let startIndex=(_pageNo - 1)*10;
       var endIndex=startIndex+_pageSize;
+            Debug.print(debug_show (endIndex));
+
       if(startIndex >= nftArr.size()){
-        return #err("page number is exceeds the number of entries");
+        return #err("page number exceeds the number of entries");
       };
-      if(endIndex >= nftArr.size()){
-        endIndex := nftArr.size()-1;
+      if(endIndex > nftArr.size()){
+        endIndex := nftArr.size();
       };
+      Debug.print(debug_show (startIndex));
+      Debug.print(debug_show (endIndex));
       let filteredNFTListings=Iter.toArray(Array.slice(nftArr,startIndex,endIndex));
       return #ok(filteredNFTListings)
     }catch e {
@@ -229,47 +266,51 @@ actor {
   };
   // Un-staking an NFT
   public shared ({caller}) func unstakeNFT(_nftID:Text):async Result.Result<Text,Text>{
-    switch(userRecords.get(caller)){
-      case(null){
-        return #err("You are not a valid user!");
-      };
-      case(?user){
-        switch(stakedNftRecords.get(_nftID)){
-          case(null){
-            return #err("No staked NFT found for this ID");
-          };
-          case(?nft){
-              if(nft.owner != caller){
-                return #err("You are not the owner of the staked NFT !");
-              };
-              let updatedImportedNFTs:Buffer.Buffer<Text> = Buffer.fromArray(user.importedNFTs);
-              updatedImportedNFTs.add(_nftID);
-              let updatedStakedNFTs:Buffer.Buffer<Text> = Buffer.fromArray(user.stakedNFTs);
-              var removeIndex=0;
-              switch(Buffer.indexOf(_nftID,updatedStakedNFTs,Text.equal)) {
-                case(null) { 
-                  return #err("No staked NFT with this ID owner by you");
+    try{
+      switch(userRecords.get(caller)){
+        case(null){
+          return #err("You are not a valid user!");
+        };
+        case(?user){
+          switch(stakedNftRecords.get(_nftID)){
+            case(null){
+              return #err("No staked NFT found for this ID");
+            };
+            case(?nft){
+                if(nft.owner != caller){
+                  return #err("You are not the owner of the staked NFT !");
                 };
-                case(?value) {
-                  removeIndex:=value;
+                let updatedImportedNFTs:Buffer.Buffer<Text> = Buffer.fromArray(user.importedNFTs);
+                updatedImportedNFTs.add(_nftID);
+                let updatedStakedNFTs:Buffer.Buffer<Text> = Buffer.fromArray(user.stakedNFTs);
+                var removeIndex=0;
+                switch(Buffer.indexOf(_nftID,updatedStakedNFTs,Text.equal)) {
+                  case(null) { 
+                    return #err("No staked NFT with this ID owner by you");
+                  };
+                  case(?value) {
+                    removeIndex:=value;
+                  };
                 };
-              };
-              ignore updatedStakedNFTs.remove(removeIndex);
-              let updatedUser:UserModel.User={
-                id=caller;
-                name=user.name;
-                email=user.email;
-                importedNFTs=Buffer.toArray(updatedImportedNFTs);
-                stakedNFTs=Buffer.toArray(updatedStakedNFTs);
-                rewardPoints=user.rewardPoints+1;//will be replaced by a reward calculation system
-              };
-              ignore userRecords.replace(caller,updatedUser);
-              stakedNftRecords.delete(_nftID);
-              return #ok("NFT successfully unstaked! ");
+                ignore updatedStakedNFTs.remove(removeIndex);
+                let updatedUser:UserModel.User={
+                  id=caller;
+                  name=user.name;
+                  email=user.email;
+                  importedNFTs=Buffer.toArray(updatedImportedNFTs);
+                  stakedNFTs=Buffer.toArray(updatedStakedNFTs);
+                  rewardPoints=user.rewardPoints+1;//will be replaced by a reward calculation system
+                };
+                ignore userRecords.replace(caller,updatedUser);
+                stakedNftRecords.delete(_nftID);
+                return #ok("NFT successfully unstaked !");
+            };
           };
         };
       };
-    };
-    return #err("Incomplete");
+    }catch e {
+      return #err(Error.message(e));
+    }
+    
   };
 };
