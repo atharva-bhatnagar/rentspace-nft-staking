@@ -1,0 +1,18 @@
+.connectPage-cont{
+    @apply bg-white   rounded-xl w-[420px] absolute top-[15%]  sm:left-[37%] shadow-md p-8
+}
+
+.close-btn{
+    @apply absolute end-5 top-1 text-xl font-medium text-gray-400 cursor-pointer
+}
+.heading-cont{
+    @apply text-2xl font-bold flex justify-center mb-8 mt-2
+}
+
+.wallet-cont{
+    @apply p-3 border flex my-4 rounded-lg shadow-md justify-between px-6 text-lg font-medium hover:bg-gray-100 cursor-pointer
+}
+
+.existing-wallet-text{
+    @apply flex justify-center mb-2 mt-8 font-medium cursor-pointer text-lg
+}

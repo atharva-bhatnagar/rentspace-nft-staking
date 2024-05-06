@@ -1,0 +1,28 @@
+.Nav-cont{
+    @apply grid grid-cols-12 text-white shadow-sm text-lg font-medium items-center font-serif 
+    
+}
+
+.img-cont{
+    @apply col-span-3 ml-[10%] my-1
+}
+
+.img{
+    @apply w-28 rounded-2xl
+}
+
+.menu-items-cont{
+    @apply flex col-span-6 justify-between mx-[8vw] items-center 
+}
+
+.menu-items-cont li{
+    @apply mx-2 text-xl font-bold hover:text-[#c86df6] cursor-pointer
+}
+
+.connect-cont{
+    @apply col-span-3 flex items-center bg-[#c86df6] text-white w-[70%]  rounded-full cursor-pointer
+}
+
+.connect-cont h1{
+    @apply mx-auto p-4
+}

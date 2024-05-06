@@ -1,0 +1,62 @@
+.dashboard-cont{
+    @apply text-white
+}
+
+
+.bgText-cont{
+    @apply flex justify-center text-8xl font-serif text-white -z-50 opacity-10 
+}
+
+.Content-cont{
+    @apply z-10  
+}
+
+.profilePic-cont{
+    @apply w-28 p-4 bg-[#0d0435] rounded-full
+}
+
+.socialHandle-cont{
+    @apply flex
+}
+
+
+.userData-cont{
+    @apply grid grid-cols-12 mx-[8%] border-b border-slate-400
+}
+
+.userData-col1{
+    @apply col-span-6 -mt-[10%] flex flex-col 
+}
+
+.username-text{
+    @apply text-4xl font-bold font-serif my-5
+}
+
+.socialHandle-cont{
+    @apply text-3xl flex gap-8 my-5
+}
+
+.email-text{
+    @apply text-2xl font-medium
+}
+
+
+.userData-col2{
+    @apply col-span-6 flex gap-[10%]  text-xl font-bold
+}
+
+.assestsData-cont{
+    @apply text-center
+}
+
+.extra-info{
+  @apply  text-lg my-2 pr-[15%]
+}
+
+.NFTSection-btn{
+    @apply flex w-full cursor-pointer
+}
+
+.NFTSection-btn h1{
+    @apply p-3 px-6 mr-16 my-10 text-lg font-bold
+}

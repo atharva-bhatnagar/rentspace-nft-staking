@@ -1,0 +1,24 @@
+.footer-sec{
+    @apply w-screen bg-[] flex flex-col sm:flex-row flex-wrap justify-evenly pt-10 pb-14 pr-28 z-40 relative   shadow-md
+}
+.footer-about{
+    @apply sm:w-1/4 
+}
+.footer-about-head{
+    @apply w-screen text-center sm:w-full sm:text-start text-3xl text-white font-bold mb-3
+}
+.footer-about-text{
+    @apply px-5 sm:px-0 text-white text-center sm:text-start text-base opacity-40 font-normal
+}
+.footer-column-cont{
+    @apply flex mt-12 sm:mt-0 px-6 sm:px-0 lg:flex-wrap  sm:w-2/5 sm:justify-between
+}
+.footer-col{
+    @apply flex flex-col items-start mr-4
+}
+.footer-col-head{
+    @apply font-black text-white text-xl mb-3
+}
+.footer-col-link{
+    @apply no-underline text-white opacity-40 text-base font-bold my-1.5
+}
