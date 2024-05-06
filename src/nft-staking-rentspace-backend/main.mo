@@ -54,7 +54,7 @@ actor {
   // 8. Get NFT details for imported NFTs d t
   // 9. Get NFT details for staked NFTs d t
   // 10. unstake a specific NFT d t
-  // 11. calculate result
+  // 11. calculate reward d t
   // 12. Add DIP721 in staking and unstaking
 
   //Create new user
@@ -280,8 +280,6 @@ actor {
                 if(nft.owner != caller){
                   return #err("You are not the owner of the staked NFT !");
                 };
-                let updatedImportedNFTs:Buffer.Buffer<Text> = Buffer.fromArray(user.importedNFTs);
-                updatedImportedNFTs.add(_nftID);
                 let updatedStakedNFTs:Buffer.Buffer<Text> = Buffer.fromArray(user.stakedNFTs);
                 var removeIndex=0;
                 switch(Buffer.indexOf(_nftID,updatedStakedNFTs,Text.equal)) {
@@ -297,9 +295,9 @@ actor {
                   id=caller;
                   name=user.name;
                   email=user.email;
-                  importedNFTs=Buffer.toArray(updatedImportedNFTs);
+                  importedNFTs=user.importedNFTs;
                   stakedNFTs=Buffer.toArray(updatedStakedNFTs);
-                  rewardPoints=user.rewardPoints+1;//will be replaced by a reward calculation system
+                  rewardPoints=user.rewardPoints+(await Functions.calculateReward(nft.stakedAt));
                 };
                 ignore userRecords.replace(caller,updatedUser);
                 stakedNftRecords.delete(_nftID);
@@ -311,6 +309,5 @@ actor {
     }catch e {
       return #err(Error.message(e));
     }
-    
   };
 };
