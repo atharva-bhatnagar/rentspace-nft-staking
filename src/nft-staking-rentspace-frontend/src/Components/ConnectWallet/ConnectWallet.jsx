@@ -2,20 +2,28 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ConnectWallet.css';
 import { myContext } from '../../MainContainer';
+import { useAuth } from '../../utils/useAuthClient';
 
 const ConnectWallet = ({ setIsConnect }) => {
   const walletData = [
-    { name: 'MetaMask', img: 'metamask-logo.png' },
-    { name: 'TrustWallet', img: 'trustwallet-logo.png' },
-    { name: 'SolFlare', img: 'solflare-logo.png' }
+    { name: 'Internet Identity', img: 'icp.png' },
+    // { name: 'TrustWallet', img: 'trustwallet-logo.png' },
+    // { name: 'SolFlare', img: 'solflare-logo.png' }
   ];
 
   const {setConnectedWallet} = useContext(myContext)
   const navigate = useNavigate()
+  const {login}=useAuth()
 
   const handleNavigate = () => {
     navigate('/registerUser');
   };
+  const userLogin=async()=>{
+    await login().then((res)=>{
+      console.log(res)
+      navigate('/userDashboard')
+    })
+  }
 
   const [userData, setUserData] = useState();
 
@@ -41,19 +49,19 @@ const ConnectWallet = ({ setIsConnect }) => {
       <p className='close-btn' onClick={() => setIsConnect(false)}> ✕ </p>
 
       <div className='heading-cont'>
-        <h1> Connect Wallet</h1>
+        <h1> Connect with</h1>
       </div>
 
       {walletData.map((data, index) => (
-        <div className='wallet-cont' key={index} onClick={() => handleWalletConnect(data.name)}>
+        <div className='wallet-cont' key={index} onClick={userLogin}>
           <h1>{data.name}</h1>
           <img className='wallet-img' src={data.img} alt='logo' />
         </div>
       ))}
 
-      <div className='existing-wallet-text' onClick={handleNavigate}>
+      {/* <div className='existing-wallet-text' onClick={handleNavigate}>
         <p> I don't have a wallet </p>
-      </div>
+      </div> */}
     </div>
   );
 };
