@@ -35,7 +35,7 @@ const RegisterUser = () => {
     // Render Method
     return (
         <div className='RegisterPage-container'>
-            <div className='form-content mx-auto'>
+            <div className='form-content'>
                 <div className='heading-cont'>
                     <h1>Register to rentSpace</h1>
                 </div>

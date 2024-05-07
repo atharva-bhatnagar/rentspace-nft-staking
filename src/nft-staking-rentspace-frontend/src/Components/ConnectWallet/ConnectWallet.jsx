@@ -47,7 +47,7 @@ const ConnectWallet = ({ setIsConnect }) => {
       {walletData.map((data, index) => (
         <div className='wallet-cont' key={index} onClick={() => handleWalletConnect(data.name)}>
           <h1>{data.name}</h1>
-          <img className='w-8' src={data.img} alt='logo' />
+          <img className='wallet-img' src={data.img} alt='logo' />
         </div>
       ))}
 

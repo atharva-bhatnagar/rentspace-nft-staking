@@ -16,3 +16,6 @@
 .existing-wallet-text{
     @apply flex justify-center mb-2 mt-8 font-medium cursor-pointer text-lg
 }
+.wallet-img{
+    @apply w-8
+}
