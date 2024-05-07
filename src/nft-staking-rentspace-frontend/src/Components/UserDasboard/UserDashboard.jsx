@@ -7,15 +7,22 @@ import { TbWorldCheck } from "react-icons/tb";
 import ImportedNFTs from './NFTsComp/ImportedNFTs';
 import StakedNFTs from './NFTsComp/StakedNFTs';
 import { NFTsData } from '../../Constants/useNFTsData';
+import { useAuth } from '../../utils/useAuthClient';
 
 
 
 const UserDashboard = () => {
     const location = useLocation();
     const {NFTs, setNFTs}= NFTsData();
+    const {actors}=useAuth()
     // Access userData from location.state if it exists
-    const userData = location.state && location.state.userData;
+    // const userData = location.state && location.state.userData;
     const [switchSection, setSwitchSection] =useState(false)
+    const [userData,setUserData]=useState({
+      name:"",
+      email:"",
+      rewardPoints:0
+    })
 
     const [AssetsData, setAssetsData]= useState([ {'Volume Traded': '' }, {'Items':null }, {'imported NFT': null }, {'Staked NFT':null } ])
      
@@ -24,6 +31,17 @@ const UserDashboard = () => {
         const stakedNfts= NFTs.filter((data, ind)=> data.staked === true )
         setAssetsData((prev)=>[ {'Volume Traded':'10k'},{'Items': NFTs.length}, {'imported NFT': importedNfts.length}, {'Staked NFT': stakedNfts.length } ])
 
+    },[])
+
+    const getUserInfo=async()=>{
+      await actors.userActor.getUserData().then((res)=>{
+        console.log(res)
+        setUserData(res.ok)
+      })
+    }
+
+    useEffect(()=>{
+      getUserInfo()
     },[])
 
     return (
@@ -42,15 +60,15 @@ const UserDashboard = () => {
                <img src={'profileLogo.png'} className='profile-img' alt='profilePic' />
             </div>
             <div>
-             <h1 className='username-text'> {userData.username} </h1>
+             <h1 className='username-text'> {userData.name}</h1>
              <div className='socialHandle-cont'>
                 <FaXTwitter/>
                 <FaMedium/>
                 <FaDiscord/>
                 <TbWorldCheck/>
              </div>
-             <h1 className='email-text'> {userData.email}</h1>
-              <p className='extra-info'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic sequi ea voluptates dolorem illum corporis amet fugit tempora, sapiente asperiores?</p>
+             <h1 className='email-text'>{userData.email}</h1>
+              <p className='extra-info'>Total points earned : {parseInt(userData.rewardPoints)}</p>
 
             </div>
             </div>

@@ -2,11 +2,13 @@ import React, { useContext, useState } from 'react';
 import './RegisterUser.css';
 import { useNavigate } from 'react-router-dom';
 import { myContext } from '../../MainContainer';
+import { useAuth } from '../../utils/useAuthClient';
 
 const RegisterUser = () => {
     // State variables
     const [userData, setUserData] = useState({ username: '', email: '' });
     const [error, setError] = useState('');
+    const {actors}=useAuth()
     
     // Hooks
     const navigate = useNavigate();
@@ -32,6 +34,20 @@ const RegisterUser = () => {
         }
     };
 
+    const registerNewUser=async()=>{
+        await actors.userActor.createNewUser({name:userData.username,email:userData.email}).then((res)=>{
+            console.log(res)
+            if(res.err){
+                alert(res.err)
+            }else{
+                alert(res.ok)
+                setTimeout(()=>{
+                    navigate('/userDashboard')
+                },1000)
+            }
+        })
+    }
+
     // Render Method
     return (
         <div className='RegisterPage-container'>
@@ -49,13 +65,13 @@ const RegisterUser = () => {
                         <input type='email' onChange={handleChange} id='email' name='email' placeholder='Enter your email' />
                     </div>
                     <div className='form-field'>
-                        <button type='submit'>Signup</button>
+                        <button type='submit' onClick={registerNewUser}>Signup</button>
                     </div>
                     {error && <p className="error-message">{error}</p>}
                 </form>
-                <div className='existing-wallet-text'>
+                {/* <div className='existing-wallet-text'>
                     <p onClick={navigateToHome}>I already have a wallet</p>
-                </div>
+                </div> */}
             </div>
             <div className='imgContainer'>
                 <img src='nft.png' alt='NFT' />

@@ -29,14 +29,9 @@ export const useAuthClient = () => {
             setActors({
                 userActor:userActor,
             })
-            await userActor.getUserData().then((res)=>{
-                console.log(res)
-            }).catch((err)=>{
-                console.log(err)
-            })
+            
+            
         }
-
-        return true;
     }
 
     useEffect(() => {
@@ -66,6 +61,8 @@ export const useAuthClient = () => {
 
     const logout = async () => {
         await authClient?.logout();
+        setIsAuthenticated(false)
+        console.log("logging out")
     }
 
     return {

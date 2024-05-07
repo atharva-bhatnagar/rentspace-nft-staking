@@ -3,10 +3,12 @@ import './LandingPage.css';
 import { Outlet } from 'react-router-dom';
 import ConnectWallet from '../ConnectWallet/ConnectWallet';
 import { myContext } from '../../MainContainer';
+import { useAuth } from '../../utils/useAuthClient';
 
 const LandingPage = () => {
   // Context usage
   const { isConnect, setIsConnect } = useContext(myContext);
+  // const {isAuthenticated}=useAuth()
 
   // Component body
   return (

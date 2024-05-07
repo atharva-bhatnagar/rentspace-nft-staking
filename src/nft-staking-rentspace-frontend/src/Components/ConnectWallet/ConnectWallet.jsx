@@ -13,35 +13,29 @@ const ConnectWallet = ({ setIsConnect }) => {
 
   const {setConnectedWallet} = useContext(myContext)
   const navigate = useNavigate()
-  const {login}=useAuth()
+  const {login,actors}=useAuth()
 
   const handleNavigate = () => {
     navigate('/registerUser');
   };
   const userLogin=async()=>{
-    await login().then((res)=>{
-      console.log(res)
-      navigate('/userDashboard')
+    await login().then(async(r)=>{
+      await actors.userActor.getUserData().then((res)=>{
+          console.log("res",res)
+          if("No user data found for this principal"==res.err){
+              navigate('registerUser')
+          }else if(res.err){
+              alert("something went wrong, please try again!")
+          }else{
+              navigate('/userDashboard')
+          }
+      }).catch((err)=>{
+          console.log("err",err)
+      })
     })
   }
 
   const [userData, setUserData] = useState();
-
-  const handleWalletConnect = async (name) => {
-    // Simulate wallet connection logic
-    // Assuming wallet connection is successful and user data is fetched
-    
-    const userData = { username: 'vimleshg', email: 'vkg911858@gmail.com' };
-
-    if (userData.username && userData.email) {
-        navigate('/userDashboard', {state:{ userData: userData }});
-        setConnectedWallet(true)
-
-    } else {
-      
-        navigate('/registerUser');
-    }
-};
 
 
   return (

@@ -30,9 +30,9 @@ const [NFTs,setNFTs] =useState( [
 
   ])
 
-  useEffect(()=>{
-    console.log(NFTs)
-  },[NFTs])
+  // useEffect(()=>{
+  //   // console.log(NFTs)
+  // },[NFTs])
 
 
   return {NFTs,setNFTs}

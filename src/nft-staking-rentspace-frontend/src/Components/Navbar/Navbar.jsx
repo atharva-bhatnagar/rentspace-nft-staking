@@ -2,10 +2,12 @@ import React, { useContext } from 'react';
 import './Navbar.css';
 import { myContext } from '../../MainContainer';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../utils/useAuthClient';
 
 const Navbar = () => {
   // Context usage
   const { setIsConnect, connectedWallet, setConnectedWallet } = useContext(myContext);
+  const {isAuthenticated,logout}=useAuth()
   
   // Navigation hook
   const navigate = useNavigate();
@@ -14,9 +16,9 @@ const Navbar = () => {
   const menuItems = ['Stake', 'Buy', 'Contact', 'Links'];
 
   // Logout handler
-  function handleLogout() {
+  async function handleLogout() {
     // Logic of logout
-    setConnectedWallet(false);
+    await logout()
     navigate('/');
   }
 
@@ -31,13 +33,13 @@ const Navbar = () => {
         ))}
       </ul>
 
-      {connectedWallet ? (
+      {isAuthenticated ? (
         <div className='connect-cont' onClick={handleLogout}>
           <h1>Logout</h1>
         </div>
       ) : (
         <div className='connect-cont' onClick={() => setIsConnect(true)}>
-          <h1>Connect Your Wallet</h1>
+          <h1>Join us</h1>
         </div>
       )}
     </div>
