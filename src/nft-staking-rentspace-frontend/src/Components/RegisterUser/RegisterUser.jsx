@@ -43,7 +43,7 @@ const RegisterUser = () => {
                 alert(res.ok)
                 setTimeout(()=>{
                     navigate('/userDashboard')
-                },1000)
+                },3000)
             }
         })
     }

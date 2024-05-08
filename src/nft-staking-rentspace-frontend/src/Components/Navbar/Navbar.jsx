@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import './Navbar.css';
 import { myContext } from '../../MainContainer';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   // Menu items array
-  const menuItems = ['Stake', 'Buy', 'Contact', 'Links'];
+  const menuItems = ['Stake', 'Buy', 'Contact', 'Dashboard'];
 
   // Logout handler
   async function handleLogout() {
@@ -22,6 +22,12 @@ const Navbar = () => {
     navigate('/');
   }
 
+  useEffect(()=>{
+    if(!isAuthenticated){
+      navigate('/')
+    }
+  },[])
+
   return (
     <div className='Nav-cont'>
       <div className='img-cont'>
@@ -29,7 +35,11 @@ const Navbar = () => {
       </div>
       <ul className='menu-items-cont'>
         {menuItems.map((item, index) => (
-          <li key={index}>{item}</li>
+          <li key={index} onClick={()=>{
+            if(isAuthenticated){
+              navigate('/userDashboard')
+            }
+          }}>{item}</li>
         ))}
       </ul>
 

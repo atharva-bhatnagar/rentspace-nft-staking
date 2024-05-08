@@ -20,7 +20,8 @@ const ConnectWallet = ({ setIsConnect }) => {
   };
   const userLogin=async()=>{
     await login().then(async(r)=>{
-      await actors.userActor.getUserData().then((res)=>{
+      let newActor=(actors?.userActor==undefined)?r:actors?.userActor
+      await newActor.getUserData().then((res)=>{
           console.log("res",res)
           if("No user data found for this principal"==res.err){
               navigate('registerUser')

@@ -8,6 +8,7 @@ import ImportedNFTs from './NFTsComp/ImportedNFTs';
 import StakedNFTs from './NFTsComp/StakedNFTs';
 import { NFTsData } from '../../Constants/useNFTsData';
 import { useAuth } from '../../utils/useAuthClient';
+import { formatMetadata } from '../../utils/utils';
 
 
 
@@ -42,6 +43,7 @@ const UserDashboard = () => {
 
     useEffect(()=>{
       getUserInfo()
+      console.log(formatMetadata())
     },[])
 
     return (
@@ -60,15 +62,15 @@ const UserDashboard = () => {
                <img src={'profileLogo.png'} className='profile-img' alt='profilePic' />
             </div>
             <div>
-             <h1 className='username-text'> {userData.name}</h1>
+             <h1 className='username-text'> {userData?.name}</h1>
              <div className='socialHandle-cont'>
                 <FaXTwitter/>
                 <FaMedium/>
                 <FaDiscord/>
                 <TbWorldCheck/>
              </div>
-             <h1 className='email-text'>{userData.email}</h1>
-              <p className='extra-info'>Total points earned : {parseInt(userData.rewardPoints)}</p>
+             <h1 className='email-text'>{userData?.email}</h1>
+              <p className='extra-info'>Total points earned : {parseInt(userData?.rewardPoints)}</p>
 
             </div>
             </div>

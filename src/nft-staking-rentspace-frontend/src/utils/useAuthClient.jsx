@@ -29,7 +29,7 @@ export const useAuthClient = () => {
             setActors({
                 userActor:userActor,
             })
-            
+            return userActor
             
         }
     }
