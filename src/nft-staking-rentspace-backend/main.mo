@@ -12,6 +12,7 @@ import Nat "mo:base/Nat";
 import Debug "mo:base/Debug";
 import Functions "utils/functions";
 import NftModel "models/nftModel";
+
 actor {
   var userRecords=TrieMap.TrieMap<Principal,UserModel.User>(Principal.equal,Principal.hash);
   stable var stableUserRecords:[(Principal,UserModel.User)]=[];
